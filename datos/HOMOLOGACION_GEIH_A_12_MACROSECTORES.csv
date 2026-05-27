@@ -1,0 +1,13 @@
+ID,Macrosector,Rama GEIH DANE,Descripción,Código CIIU,Notas
+M01,Agropecuario,Agricultura ganadería caza silvicultura y pesca,Actividades primarias de producción agrícola y pecuaria,A,Incluye agricultura transitorios y permanentes
+M02,Minería y Energía,Suministro de electricidad gas agua y gestión de desechos,Extracción de minas y canteras + Energía,B+D+E,DANE agrupa Minería con Energía y Agua
+M03,Manufactura,Industrias manufactureras,Transformación industrial de productos,C,Incluye alimentos textiles químicos metales etc
+M04,Construcción,Construcción,Edificación e infraestructura,F,Obras civiles y construcción de edificios
+M05,Comercio y Turismo,Comercio y reparación de vehículos + Alojamiento y servicios de comida,Comercio mayorista minorista y turismo,G+I,Incluye hoteles restaurantes y servicios de comida
+M06,Transporte y Logística,Transporte y almacenamiento,Transporte de carga y pasajeros,H,Incluye transporte terrestre aéreo y fluvial
+M07,Financiero y Seguros,Actividades financieras y de seguros,Intermediación financiera y seguros,K,Bancos seguros y fondos de pensiones
+M08,Inmobiliario,Actividades inmobiliarias,Servicios inmobiliarios y alquiler,L,Alquiler de vivienda y propiedades
+M09,Servicios Profesionales,Actividades profesionales científicas técnicas y servicios administrativos,Servicios especializados,M+N,Consultoría abogados contadores servicios administrativos
+M10,Educación y Salud,Administración pública y defensa educación y atención de la salud humana,Servicios públicos de educación y salud,O+P+Q,Educación pública privada y servicios de salud
+M11,TIC y Economía Digital,Información y comunicaciones,Tecnologías de información y comunicación,J,Telecomunicaciones software y servicios de TI
+M12,Gobierno y Servicios Sociales,Actividades artísticas entretenimiento recreación y otras actividades de servicios,Entretenimiento cultura y servicios diversos,R+S+T+U,Arte cultura deporte y otros servicios
