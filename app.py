@@ -152,7 +152,7 @@ elif pagina == "📈 Sectores ICDS / ICDS*":
                     "S3":"background-color:#E6F1FB","S4":"background-color:#FAEEDA",
                     "S5":"background-color:#FCEBEB"}.get(v,"")
         st.dataframe(
-            df_t.style.map(ce, subset=["Estado","Estado*"])
+            df_t.style.applymap(ce, subset=["Estado","Estado*"])
             .background_gradient(subset=["ICDS","ICDS*"], cmap="RdYlGn", vmin=0, vmax=1)
             .format({"ICDS":"{:.4f}","ICDS*":"{:.4f}","Ajuste MIP":"{:.4f}"}),
             use_container_width=True, height=450)
@@ -320,11 +320,19 @@ elif pagina == "🔄 Markov — Riesgo financiero":
         fig_trm.add_trace(go.Scatter(x=df_mk['Periodo'],y=df_mk['Tasa'],
                                       mode='lines',name='TPM (%)',
                                       line=dict(color='#1F4E79',width=1.5),yaxis='y2'))
-        fig_trm.update_layout(height=280,margin=dict(t=20,b=10,l=10,r=60),
-                               legend=dict(font_size=10,orientation="h",y=1.1),
-                               yaxis=dict(title=dict(text="TRM", font=dict(color="#BA7517"))),
-                               yaxis2=dict(title=dict(text="TPM (%)", font=dict(color="#1F4E79")),
-                                           overlaying="y", side="right"))
+        fig_trm.update_layout(
+            height=280,
+            margin=dict(t=20, b=10, l=10, r=60),
+            legend=dict(font_size=10, orientation="h", y=1.1),
+            yaxis=dict(
+                title=dict(text="TRM", font=dict(color="#BA7517"))
+            ),
+            yaxis2=dict(
+                title=dict(text="TPM (%)", font=dict(color="#1F4E79")),
+                overlaying="y",
+                side="right"
+            )
+        )
         st.plotly_chart(fig_trm, use_container_width=True)
 
 # ═══════════════════════════════ MIP ══════════════════════════════
@@ -335,9 +343,7 @@ elif pagina == "🔗 Red de contagio MIP":
     col1,col2 = st.columns([1.1,0.9])
     with col1:
         umbral = st.slider("Umbral vínculo A_ij", 0.01,0.15,0.04,0.01)
-        A_np = A.to_numpy(copy=True)
-        for i in range(min(A_np.shape)):
-            A_np[i, i] = 0
+        A_np = A.values.copy(); np.fill_diagonal(A_np,0)
         G = nx.DiGraph()
         for n in MACROS_LIST: G.add_node(n)
         for i,o in enumerate(MACROS_LIST):
@@ -376,9 +382,7 @@ elif pagina == "🔗 Red de contagio MIP":
         st.plotly_chart(fig_m, use_container_width=True)
 
         st.subheader("Top vínculos")
-        A_off = A.copy()
-        for i in range(min(A_off.shape)):
-            A_off.iat[i, i] = 0
+        A_off = A.copy(); np.fill_diagonal(A_off.values,0)
         pares = sorted([(float(A_off.loc[i,j]),i,j) for i in MACROS_LIST for j in MACROS_LIST
                          if float(A_off.loc[i,j])>0.02], reverse=True)
         df_p = pd.DataFrame([(MACROS[i][:18],MACROS[j][:18],round(v,4)) for v,i,j in pares[:10]],
