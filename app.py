@@ -504,4 +504,3 @@ $$P(s_t = j \\mid s_{{t-1}} = i) = p_{{ij}}$$
 - Markov por umbrales en ICDS*; MarkovRegression solo en Score_Riesgo financiero
 - Agregación 68 productos CPC → 12 macrosectores pierde heterogeneidad interna
 """)
-
