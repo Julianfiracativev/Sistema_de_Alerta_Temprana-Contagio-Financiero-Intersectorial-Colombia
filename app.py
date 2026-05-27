@@ -152,10 +152,15 @@ elif pagina == "📈 Sectores ICDS / ICDS*":
                     "S3":"background-color:#E6F1FB","S4":"background-color:#FAEEDA",
                     "S5":"background-color:#FCEBEB"}.get(v,"")
         st.dataframe(
-            df_t.style.applymap(ce, subset=["Estado","Estado*"])
-            .background_gradient(subset=["ICDS","ICDS*"], cmap="RdYlGn", vmin=0, vmax=1)
-            .format({"ICDS":"{:.4f}","ICDS*":"{:.4f}","Ajuste MIP":"{:.4f}"}),
-            use_container_width=True, height=450)
+            df_t.round({
+                "ICDS": 4,
+                "ICDS*": 4,
+                "Ajuste MIP": 4
+            }),
+            use_container_width=True,
+            height=450,
+            hide_index=True
+        )
 
     with col2:
         sorted2 = sorted(MACROS_LIST, key=lambda m: ult_sectores.get(m,{}).get('icds_star',0))
@@ -343,7 +348,9 @@ elif pagina == "🔗 Red de contagio MIP":
     col1,col2 = st.columns([1.1,0.9])
     with col1:
         umbral = st.slider("Umbral vínculo A_ij", 0.01,0.15,0.04,0.01)
-        A_np = A.values.copy(); np.fill_diagonal(A_np,0)
+        A_np = A.to_numpy(copy=True)
+        for i in range(min(A_np.shape)):
+            A_np[i, i] = 0
         G = nx.DiGraph()
         for n in MACROS_LIST: G.add_node(n)
         for i,o in enumerate(MACROS_LIST):
@@ -382,7 +389,9 @@ elif pagina == "🔗 Red de contagio MIP":
         st.plotly_chart(fig_m, use_container_width=True)
 
         st.subheader("Top vínculos")
-        A_off = A.copy(); np.fill_diagonal(A_off.values,0)
+        A_off = A.copy()
+        for i in range(min(A_off.shape)):
+            A_off.iat[i, i] = 0
         pares = sorted([(float(A_off.loc[i,j]),i,j) for i in MACROS_LIST for j in MACROS_LIST
                          if float(A_off.loc[i,j])>0.02], reverse=True)
         df_p = pd.DataFrame([(MACROS[i][:18],MACROS[j][:18],round(v,4)) for v,i,j in pares[:10]],
@@ -421,11 +430,25 @@ ICDS*_i = ICDS_i
                               margin=dict(t=45,b=10,l=5,r=10))
         st.plotly_chart(fig_ch, use_container_width=True)
     res['Alerta'] = res['caida'].apply(lambda v: "⚠️ CONTAGIO" if v>0.02 else ("🔴 EPICENTRO" if v==res['caida'].max() else "—"))
-    st.dataframe(res[['macrosector','icds_base','icds_shock','caida','Alerta']]
-                 .rename(columns={'macrosector':'Sector','icds_base':'ICDS base','icds_shock':'ICDS shock','caida':'Caída'})
-                 .style.background_gradient(subset=['Caída'],cmap='Reds')
-                 .format({'ICDS base':'{:.4f}','ICDS shock':'{:.4f}','Caída':'{:.4f}'}),
-                 use_container_width=True, hide_index=True)
+    df_res = (
+        res[['macrosector','icds_base','icds_shock','caida','Alerta']]
+        .rename(columns={
+            'macrosector':'Sector',
+            'icds_base':'ICDS base',
+            'icds_shock':'ICDS shock',
+            'caida':'Caída'
+        })
+    )
+
+    st.dataframe(
+        df_res.round({
+            "ICDS base": 4,
+            "ICDS shock": 4,
+            "Caída": 4
+        }),
+        use_container_width=True,
+        hide_index=True
+    )
 
 # ═══════════════════════════════ METODOLOGÍA ══════════════════════
 elif pagina == "📖 Metodología":
